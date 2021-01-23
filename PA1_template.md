@@ -10,7 +10,8 @@ output:
 ---
 # Session Settings
 
-```{r Session Settings, echo = TRUE, message = FALSE}
+
+```r
 knitr::opts_chunk$set(echo = TRUE)
 
 # Packages
@@ -19,7 +20,8 @@ library(tidyverse) # message = FALSE hides the loading messages of a package
 
 # Loading and preprocessing the data
 
-```{r Loading, Preprocessing }
+
+```r
 URL <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
 downl <- download.file(URL,destfile = "df")
 df <- unzip("df")
@@ -34,7 +36,8 @@ rm(df, downl, URL)
 
 # What is mean total number of steps taken per day?  
 
-```{r message =FALSE}
+
+```r
 # Calculate the total steps taken per day
 TotalSteps_df <- ActivityData_df %>%
   group_by(date) %>%
@@ -49,8 +52,11 @@ qplot(TotalSteps_df$steps_sum,
       fill = I("seagreen"))
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
 
-```{r message = FALSE}
+
+
+```r
 # Calculate and report the mean and median of total steps taken per day
 MeanSteps <- TotalSteps_df %>%
   summarize(mean(steps_sum, na.ram = TRUE))
@@ -59,11 +65,12 @@ MedianSteps <- TotalSteps_df %>%
   summarize(median(steps_sum, na.rm = TRUE))
 ```
 
-The mean of total steps taken per day is `r MeanSteps` and the median `r MedianSteps`.  
+The mean of total steps taken per day is 9354.2295082 and the median 10395.  
 
 # What is the average daily activity pattern?
 
-```{r}
+
+```r
 # Make a time series plot of the 5-minute interval (x-axis) and 
 # the average number of steps taken, averaged across all days (y-axis)
 
@@ -79,17 +86,21 @@ ggplot(MeanStepsByInterval_df, aes(interval, MeanSteps)) +
        y = "Avg No of Steps")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
 ## Imputing missing values
 
-```{r}
+
+```r
 # Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NA.
 NAVal <- sum(is.na(ActivityData_df))
 ```
 
 
-There are `r NAVal` observations with missing values in the dataset, making up about `r round((NAVal / nrow(ActivityData_df)) * 100)` percent of the dataset.
+There are 2304 observations with missing values in the dataset, making up about 13 percent of the dataset.
 
-```{r}
+
+```r
 # Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be
 # sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
@@ -119,10 +130,12 @@ qplot(TotalSteps_df_NA_cleaned$steps_sum,
       main = "Histogram: Total No of Steps Taken / Day (w/ imputed NA values)",
       xlab = "Total Steps",
       fill = I("seagreen"))
-
 ```
 
-```{r}
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+
+```r
 # and Calculate and report the mean and median total number of steps taken per day
 # Do these values differ from the estimates from the first part of the assignment? 
 # What is the impact of imputing missing data on the estimates of the total daily number of steps?
@@ -134,13 +147,14 @@ MedianSteps_NA_cleaned <- TotalSteps_df_NA_cleaned %>%
   summarize(median(steps_sum, na.rm = TRUE))
 ```
 
-The average of steps taken on a given day is now at `r MeanSteps_NA_cleaned` and the median at `r MedianSteps_NA_cleaned`. Beforehand the mean was `r MeanSteps` and the median at `r MedianSteps`. The mean was lower before, as I have removed NA values. Using the mean by interval when not including empty values, a relevant share has been attributed to high average total steps and therefore we see an increase in both, mean and median, values.
+The average of steps taken on a given day is now at 1.0766189\times 10^{4} and the median at 1.0766189\times 10^{4}. Beforehand the mean was 9354.2295082 and the median at 10395. The mean was lower before, as I have removed NA values. Using the mean by interval when not including empty values, a relevant share has been attributed to high average total steps and therefore we see an increase in both, mean and median, values.
 
 # Are there differences in activity patterns between weekdays and weekends?
 
 I will continue working with the imputed data frame.
 
-```{r, message = FALSE}
+
+```r
 library(lubridate)
 
 MeanStepsByInterval_df <- ActivityData_df_NA_cleaned %>%
@@ -158,6 +172,8 @@ ggplot(MeanStepsByInterval_df, aes(interval, MeanSteps)) +
   labs(x = "Interval",
        y = "Averade Steps")
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 
 It appears, that, on weekdays, people tend to walk more in the earlier parts of the day whereas, throughout the day, people might accumulate more steps on weekends.
 
